@@ -3,7 +3,7 @@
 #program:		Ising model implementation.
 #author	:		Jack Cummins
 #created:		4th Jan 2018
-#last edited:		5th Jan 2018
+#last edited:		8th Jan 2018
 
 from numpy import random
 import numpy as np
