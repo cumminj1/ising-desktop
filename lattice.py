@@ -27,13 +27,13 @@ N= 	no of x elements in the array
 M=	no of y elements in the array
 B=	the magnetic field applied to the lattice
 T= 	the temperature applied to the lattice""" 
-N=20
-M=20
-steps=50*N*M
+N=25
+M=25
+steps=100
 Kb=1
 T=1
 B=0
-J=1
+J=-1
 class ising_model_lattice:
 
 	def __init__(self, N, M, B, T):                            #the init (says arguments etc)
@@ -52,47 +52,44 @@ class ising_model_lattice:
 	state_init=vanilla_lattice_make(N,M)
 	 
 	def metro_alg(steps, state_init, T, B, J):
-		for i in range(0,steps):
+		for i in range(steps):
+			for j in range(N):
+				for k in range(M):
 			#choose the initial spin si
 			#note that need to go 1 higher with randint
-			
-			#x_pos=np.random.randint(self.N+1)
-			#y_pos=np.random.randint(self.M+1)
-			x_pos=np.random.choice(N)
-			y_pos=np.random.choice(M)
-			si=state_init[x_pos,y_pos]
+					x_pos=j
+					y_pos=k
+					si=state_init[x_pos,y_pos]
 
-			#think about the effect of its nearest neigbours
-			#add the modulus division as periodic boundary cond.
-			nearest= (state_init[(x_pos+1)%N,y_pos]+ 
-				state_init[(x_pos-1)%N,y_pos]+
-				state_init[x_pos,(y_pos+1)%M]+
-				state_init[x_pos,(y_pos-1)%M])
+					#think about the effect of its nearest neigbours
+					#add the modulus division as periodic boundary cond.
+					nearest= (state_init[(x_pos+1)%N,y_pos]+ 
+						state_init[(x_pos-1)%N,y_pos]+
+						state_init[x_pos,(y_pos+1)%M]+
+						state_init[x_pos,(y_pos-1)%M])
 
-			#now need to try to flip the spin and
-			#see how the energy changes
-			dE= 2*si*B - 2*J*si*nearest
+					#now need to try to flip the spin and
+					#see how the energy changes
+					dE= 2*si*B - 2*J*si*nearest
 
-			#set the test conditions
-		 	#print random.random()
-			# if energy is less than 0
-			#accetp the flip
-			if dE >= 0:
-				si *= -1
+					#set the test conditions
+				 	print random.random()
+					# if energy is less than 0
+					#accetp the flip
+					if dE >= 0:
+						si *= -1
 
-			#if energy is greater than 0
-			#only accept the flip with a certain probability:
-			elif random.random() < np.exp((1*dE)/Kb*T):
-				si *= -1
+					#if energy is greater than 0
+					#only accept the flip with a certain probability:
+					elif random.random() < np.exp((1*dE)/Kb*T):
+						si *= -1
 
-			#else there is  no change but
-			#this doesn't need to be specified.
-			state_init[x_pos,y_pos]= si
-			print str((100*i)/steps) + '% complete'
-			#print str((i/ steps))+ '% complete' 
-			plt.imshow(state_init, interpolation='none')
-			#plt.colorbar()
-			i=+1
+					#else there is  no change but
+					#this doesn't need to be specified.
+					state_init[x_pos,y_pos]= si
+					#print si
+					plt.imshow(state_init, interpolation='none')
+					#plt.colorbar()
 		plt.show()
 			               
 
