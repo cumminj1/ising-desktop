@@ -5,6 +5,7 @@
 #created:		4th Jan 2018
 #last edited:		8th Jan 2018
 
+#uses iterative model over random sampling in the metropolis algorithm
 from numpy import random
 import numpy as np
 from matplotlib import pyplot as plt
