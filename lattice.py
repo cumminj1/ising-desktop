@@ -15,8 +15,6 @@ from pylab import cm
 import matplotlib.animation as anim
 import time
 
-tic=time.time()
-
 #first we're going to need to write code for a lattice
 
 """Define the lattice fucntions etc as a class to keep
@@ -31,19 +29,27 @@ B=	the magnetic field applied to the lattice
 T= 	the temperature applied to the lattice""" 
 N=100
 M=100
-steps=2000*N*M
+steps=100*N*M
 sweeps= steps/(N*M)
 Kb=1
 T=1
 B=0
 J=1
-class ising_model_lattice:
 
-	def __init__(self, N, M, B, T):                            #the init (says arguments etc)
+	
+#empty list to store energy values		
+
+class ising_model_lattice:
+		
+#=======================================================================================
+	def __init__(self, N, M, B, T, Energy):                            #the init (says arguments etc)
 		self.N=N
 		self.M=M
 		self.B=B
 		self.T=T
+		self.Energy=Energy
+
+#=======================================================================================	
 
 	def vanilla_lattice_make(N,M):                             #fucntion which makes lattice
 		matrix=np.zeros((N,M))
@@ -53,8 +59,8 @@ class ising_model_lattice:
 		return matrix
 	
 	state_init=vanilla_lattice_make(N,M)
-	 
-	def metro_alg(steps, state_init, T, B, J):
+#======================================================================================	 
+	"""def metro_alg(steps, state_init, T, B, J):
 		for i in range(0,steps):
 			#choose the initial spin si
 			#note that need to go 1 higher with randint
@@ -97,23 +103,51 @@ class ising_model_lattice:
 			
 			#adding a progress monitor to the loop, with overwrite in terminal
 			print "Sweeps are " + str((100*float(i))/steps) + '% complete' + "\r" ,
+			i=+1"""
+#====================================================================================================		
+	def energy(steps, state_init, T, B, J):
+		#the energy of 1 flip is as above
+		for i in range (0,N):
+			for j in range (0,M):			
 			
-			#creating the plot 
-			
-			i=+1
-		
+				totalE=[]
+
+				x_pos=i
+				y_pos=j
+				si=state_init[x_pos,y_pos]
+
+				#think about the effect of its nearest neigbours
+				#add the modulus division as periodic boundary cond.
+				nearest= (state_init[(x_pos+1)%N,y_pos]+ 
+					state_init[(x_pos-1)%N,y_pos]+
+					state_init[x_pos,(y_pos+1)%M]+
+					state_init[x_pos,(y_pos-1)%M])
+				solo_energy= si*B - J*si*nearest
+				totalE.append(solo_energy)
+		E=sum(totalE)/(N*M)
+		print E
+		print(totalE[0])
+	enertest=energy(steps, state_init, T, B, J)
+	print(enertest)
+	
+"""#=======================================================================================================
 		#printing the graph of the final state
 		print("Now Plotting The Final state...                             ")
 		plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
 		plt.title("final state of " + str(N) + ' x ' + str(M) + " spin matrix, with " + str(sweeps) + " sweeps")					
 		plt.colorbar(ticks=range(-1,2), label= 'Spin')
 		plt.clim(-1,1)
-		plt.show()
-			               
+		plt.show()	
+
+	
+
+
+
+#=========================================================================================
 
 	#printing a graph of the initial matrix state
 	tester= vanilla_lattice_make(N,M)
-	print(tester)
+	#print(tester)
 	plt.imshow(tester, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
 	plt.title('Initial Spin Map for '+ str(N) + ' x ' +str(M) + ' matrix ')
 	
@@ -124,13 +158,13 @@ class ising_model_lattice:
 	plt.show()
 
 	metrotest=metro_alg(steps, state_init, T, B, J)
-	plt.imshow(metrotest)
+	#plt.imshow(metrotest)
 	plt.show()
+#==========================================================================
+"""
+	
+	
 
-toc= time.time()
-
-elapsed=toc-tic
-print ( elapsed )
 
 
 
