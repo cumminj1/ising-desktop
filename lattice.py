@@ -47,8 +47,9 @@ class ising_model_lattice:
 		self.M=M
 		self.B=B
 		self.T=T
-		self.Energy=Energy
-
+		#self.energy=energy
+		#self.vanilla_lattice_make()=vanilla_lattice_make()
+		#self.metro_alg=metro_alg
 #=======================================================================================	
 
 	def vanilla_lattice_make(N,M):                             #fucntion which makes lattice
@@ -60,7 +61,7 @@ class ising_model_lattice:
 	
 	state_init=vanilla_lattice_make(N,M)
 #======================================================================================	 
-	"""def metro_alg(steps, state_init, T, B, J):
+	def metro_alg(steps, state_init, T, B, J):
 		for i in range(0,steps):
 			#choose the initial spin si
 			#note that need to go 1 higher with randint
@@ -103,33 +104,40 @@ class ising_model_lattice:
 			
 			#adding a progress monitor to the loop, with overwrite in terminal
 			print "Sweeps are " + str((100*float(i))/steps) + '% complete' + "\r" ,
-			i=+1"""
+			i=+1
+		return state_init
+	
+	hugh=metro_alg(steps, state_init, T, B, J)		
+	plt.imshow(hugh, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
+	plt.show()
 #====================================================================================================		
-	def energy(steps, state_init, T, B, J):
+	def energy(steps, hugh, T, B, J):
 		#the energy of 1 flip is as above
-		for i in range (0,N):
-			for j in range (0,M):			
+		for T in range (1, 10):			
+			for i in range (0,N):
+				for j in range (0,M):			
 			
-				totalE=[]
+					totalE=[]
 
-				x_pos=i
-				y_pos=j
-				si=state_init[x_pos,y_pos]
+					x_pos=i
+					y_pos=j
+					si=hugh[x_pos,y_pos]
 
-				#think about the effect of its nearest neigbours
-				#add the modulus division as periodic boundary cond.
-				nearest= (state_init[(x_pos+1)%N,y_pos]+ 
-					state_init[(x_pos-1)%N,y_pos]+
-					state_init[x_pos,(y_pos+1)%M]+
-					state_init[x_pos,(y_pos-1)%M])
-				solo_energy= si*B - J*si*nearest
-				totalE.append(solo_energy)
-		E=sum(totalE)/(N*M)
-		print E
-		print(totalE[0])
+					#think about the effect of its nearest neigbours
+					#add the modulus division as periodic boundary cond.
+					nearest= (hugh[(x_pos+1)%N,y_pos]+ 
+						hugh[(x_pos-1)%N,y_pos]+
+						hugh[x_pos,(y_pos+1)%M]+
+						hugh[x_pos,(y_pos-1)%M])
+				
+					solo_energy= si*B - J*si*nearest
+					totalE.append(solo_energy)
+					E=sum(totalE)/(N*M)
+					print E
+					print("this is total E: " + str(totalE))
 	enertest=energy(steps, state_init, T, B, J)
 	print(enertest)
-	
+
 """#=======================================================================================================
 		#printing the graph of the final state
 		print("Now Plotting The Final state...                             ")
@@ -157,12 +165,12 @@ class ising_model_lattice:
 
 	plt.show()
 
-	metrotest=metro_alg(steps, state_init, T, B, J)
+	metrotest=metro_alg(steps, state_init, T, B, J)	#taken by cutpaste from the end	
 	#plt.imshow(metrotest)
 	plt.show()
 #==========================================================================
 """
-	
+
 	
 
 
