@@ -3,7 +3,7 @@
 #program:		Ising model implementation.
 #author	:		Jack Cummins
 #created:		4th Jan 2018
-#last edited:		8th Jan 2018
+#last edited:		16th Jan 2018
 
 from numpy import random
 import numpy as np
@@ -13,7 +13,9 @@ import math as math
 plt.switch_backend('QT4Agg')
 from pylab import cm
 import matplotlib.animation as anim
+import time
 
+tic=time.time()
 
 #first we're going to need to write code for a lattice
 
@@ -27,9 +29,10 @@ N= 	no of x elements in the array
 M=	no of y elements in the array
 B=	the magnetic field applied to the lattice
 T= 	the temperature applied to the lattice""" 
-N=20
-M=20
-steps=50*N*M
+N=100
+M=100
+steps=2000*N*M
+sweeps= steps/(N*M)
 Kb=1
 T=1
 B=0
@@ -71,7 +74,7 @@ class ising_model_lattice:
 
 			#now need to try to flip the spin and
 			#see how the energy changes
-			dE= 2*si*B - 2*J*si*nearest
+			dE= +2*si*B - 2*J*si*nearest
 
 			#set the test conditions
 		 	#print random.random()
@@ -82,33 +85,52 @@ class ising_model_lattice:
 
 			#if energy is greater than 0
 			#only accept the flip with a certain probability:
-			elif random.random() < np.exp((1*dE)/Kb*T):
+			elif random.random() < np.exp((1*dE)/(Kb*T)):
 				si *= -1
 
+			else: 
+				si*=1
+
 			#else there is  no change but
-			#this doesn't need to be specified.
+			#this doesn't need to be specified.... or does it..?
 			state_init[x_pos,y_pos]= si
-			print str((100*i)/steps) + '% complete'
-			#print str((i/ steps))+ '% complete' 
-			plt.imshow(state_init, interpolation='none')
-			#plt.colorbar()
+			
+			#adding a progress monitor to the loop, with overwrite in terminal
+			print "Sweeps are " + str((100*float(i))/steps) + '% complete' + "\r" ,
+			
+			#creating the plot 
+			
 			i=+1
+		
+		#printing the graph of the final state
+		print("Now Plotting The Final state...                             ")
+		plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
+		plt.title("final state of " + str(N) + ' x ' + str(M) + " spin matrix, with " + str(sweeps) + " sweeps")					
+		plt.colorbar(ticks=range(-1,2), label= 'Spin')
+		plt.clim(-1,1)
 		plt.show()
 			               
 
-
+	#printing a graph of the initial matrix state
 	tester= vanilla_lattice_make(N,M)
 	print(tester)
-	#cmap= cm.get_cmap('RGB', 3)
-	plt.imshow(tester, interpolation='none')
-	plt.title('Spin Map')
+	plt.imshow(tester, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
+	plt.title('Initial Spin Map for '+ str(N) + ' x ' +str(M) + ' matrix ')
 	
-	plt.colorbar()
+	#discretising the colorbar to show spins
+	plt.colorbar(ticks=range(-1,2), label='Spin')
+	plt.clim(-1,1)
 
 	plt.show()
 
 	metrotest=metro_alg(steps, state_init, T, B, J)
 	plt.imshow(metrotest)
 	plt.show()
+
+toc= time.time()
+
+elapsed=toc-tic
+print ( elapsed )
+
 
 
