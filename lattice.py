@@ -27,13 +27,13 @@ N= 	no of x elements in the array
 M=	no of y elements in the array
 B=	the magnetic field applied to the lattice
 T= 	the temperature applied to the lattice""" 
-N=60
-M=60
-steps=800*N*M
+N=40
+M=40
+steps=650*N*M
 sweeps= steps/(N*M)
 Kb=1
 T=1
-B=1
+B=0
 J=1
 
 	
@@ -114,9 +114,11 @@ class ising_model_lattice:
 			i=+1
 		return state_init
 	
-	#state_final_check=metro_alg(steps, state_init, T, B, J)
-	#plt.imshow(state_final_check)
-	#plt.show()
+
+	#just checking final state each time to check if number of steps is sufficient
+	state_final_check=metro_alg(steps, state_init, T, B, J)
+	plt.imshow(state_final_check, interpolation='none')
+	plt.show()
 
 #==============================================================================================	
 #==========================================magnetisation=========================================
@@ -127,7 +129,7 @@ class ising_model_lattice:
 		return mags
 
 	#create a temperature array over which we check the magnetisation
-	temp_array=np.arange(0.1,4,0.25)	
+	temp_array=np.arange(0.1,5,0.1)	
 	
 	#create a for loop of temperature arrays so we can see how magnetisation 
 	#changes as a function of temperature
@@ -154,16 +156,73 @@ class ising_model_lattice:
 		suscept = (1/T)*(mags-mags2)
 		return suscept
 
-	for T in (temp_array):
+	#write a loop to evaluate the susceptibility at a range of temperature values
+	#for T in (temp_array):
 		state_final=metro_alg(steps, state_init, T, B, J)
-		succ= succeptibility(state_final, T)
-		print("the mag susceptibility is equal to " + str(succ) + " for Temperature= " + str(T))
-		plt.plot(T, succ, 'ro')
+	#	succ= succeptibility(state_final, T)
+	#	print("the mag susceptibility is equal to " + str(succ) + " for Temperature= " + str(T))
+	#	plt.plot(T, succ, 'ro')
+	
 	#preparing the plot of mag suscept. as a function of temperature
-	plt.xlabel('Temperature')
-	plt.ylabel("mag suscept.")
-	plt.title('mag suscept. as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
+	#plt.xlabel('Temperature')
+	#plt.ylabel("mag suscept.")
+	#plt.title('mag suscept. as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
+	#plt.show()
+
+
+#==============================================================================================	
+#====================================energy===================================================	
+#==============================================================================================
+	#creating a function to calculate the energy of a configuration
+	def En(matrix):
+		energy=0
+		for i in range (N):
+			for j in range (M):
+				
+				#renaming i,j sheerly for consistency and ease of reading
+				x_pos=i
+				y_pos=j
+
+				#si is a spin state in the matrix
+				si=matrix[x_pos,y_pos]
+			
+				#the boundary conditions w/ modulo
+				nearest= (matrix[(x_pos+1)%N,y_pos]
+					+ matrix[(x_pos-1)%N,y_pos]
+					+matrix[x_pos,(y_pos+1)%M]
+					+matrix[x_pos,(y_pos-1)%M])
+
+				#update the energy from zero with each iteration
+				energy += -si*nearest*0.5*J
+		
+		#making sure to normalise the energy to the array size
+		return (energy)/(N*M)
+
+
+		
+	#create a temperature loop to observe how the energy of a configuration changes with temp
+	for T in (temp_array):
+
+		matrix=metro_alg(steps, state_init, T, B, J)
+		enerplot=En(matrix)
+		#print("enercheck returns:          " + str(enercheck))
+
+		#preparing the points to add to the plot
+		plt.plot(T, enerplot, 'ro')
+		plt.title("Energy  as a function of Temperature")
+		plt.xlabel("Temperature")
+		plt.ylabel('Energy')
 	plt.show()
+
+
+#==============================================================================================	
+#===================================Heat capacity==========================================	
+#==============================================================================================	
+#this should be fairly similar in application as magnetic susceptibility was
+#(1/Kb*T)/T   *   [<E**2>-<E>**2]= C
+
+	def heat_cap(matrix):
+		heat1=
 
 """#=======================================================================================================
 		#printing the graph of the final state
