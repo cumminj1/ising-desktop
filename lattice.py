@@ -129,7 +129,7 @@ class ising_model_lattice:
 		return mags
 
 	#create a temperature array over which we check the magnetisation
-	temp_array=np.arange(0.1,5,0.1)	
+	temp_array=np.arange(0.1,5,0.05)	
 	
 	#create a for loop of temperature arrays so we can see how magnetisation 
 	#changes as a function of temperature
@@ -157,24 +157,24 @@ class ising_model_lattice:
 		return suscept
 
 	#write a loop to evaluate the susceptibility at a range of temperature values
-	#for T in (temp_array):
+	for T in (temp_array):
 		state_final=metro_alg(steps, state_init, T, B, J)
-	#	succ= succeptibility(state_final, T)
-	#	print("the mag susceptibility is equal to " + str(succ) + " for Temperature= " + str(T))
-	#	plt.plot(T, succ, 'ro')
+		succ= succeptibility(state_final, T)
+		print("the mag susceptibility is equal to " + str(succ) + " for Temperature= " + str(T))
+		plt.plot(T, succ, 'ro')
 	
 	#preparing the plot of mag suscept. as a function of temperature
-	#plt.xlabel('Temperature')
-	#plt.ylabel("mag suscept.")
-	#plt.title('mag suscept. as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
-	#plt.show()
+	plt.xlabel('Temperature')
+	plt.ylabel("mag suscept.")
+	plt.title('mag suscept. as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
+	plt.show()
 
 
 #==============================================================================================	
 #====================================energy===================================================	
 #==============================================================================================
 	#creating a function to calculate the energy of a configuration
-	def En(matrix):
+	"""def En(matrix):
 		energy=0
 		for i in range (N):
 			for j in range (M):
@@ -212,7 +212,7 @@ class ising_model_lattice:
 		plt.title("Energy  as a function of Temperature")
 		plt.xlabel("Temperature")
 		plt.ylabel('Energy')
-	plt.show()
+	plt.show()"""
 
 
 #==============================================================================================	
@@ -221,8 +221,8 @@ class ising_model_lattice:
 #this should be fairly similar in application as magnetic susceptibility was
 #(1/Kb*T)/T   *   [<E**2>-<E>**2]= C
 
-	def heat_cap(matrix):
-		heat1=
+	#def heat_cap(matrix):
+	#	heat1
 
 """#=======================================================================================================
 		#printing the graph of the final state
