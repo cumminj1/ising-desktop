@@ -3,7 +3,7 @@
 #program:		Ising model implementation.
 #author	:		Jack Cummins
 #created:		4th Jan 2018
-#last edited:		16th Jan 2018
+#last edited:		23th Jan 2018
 
 from numpy import random
 import numpy as np
@@ -27,9 +27,9 @@ N= 	no of x elements in the array
 M=	no of y elements in the array
 B=	the magnetic field applied to the lattice
 T= 	the temperature applied to the lattice""" 
-N=40
-M=40
-steps=650*N*M
+N=20
+M=20
+steps=10*N*M
 sweeps= steps/(N*M)
 Kb=1
 T=1
@@ -44,12 +44,12 @@ class ising_model_lattice:
 #==============================initialisation==============================================
 #==============================================================================================
 	
-	def __init__(self, N, M, B, T, Energy):                            #the init (says arguments etc)
+	def __init__(self, N, M, B, T):                            #the init (says arguments etc)
 		self.N=N
 		self.M=M
 		self.B=B
 		self.T=T
-		
+		self.Kb=Kb
 
 #==============================================================================================
 #===========================intial matrix maker=============================================	
@@ -150,13 +150,13 @@ class ising_model_lattice:
 #==============================================================================================
 
 	#Mag supt is defined as X= [1/T][<M**2>-<M>**2]
-	def succeptibility(matrix, T):
+	def succeptibility( matrix, T):
 		mags= abs((np.sum(matrix*matrix))/(N*M))
 		mags2= abs(np.sum((matrix)/(N*M))**2)
 		suscept = (1/T)*(mags-mags2)
 		return suscept
 
-	#write a loop to evaluate the susceptibility at a range of temperature values
+	"""#write a loop to evaluate the susceptibility at a range of temperature values
 	for T in (temp_array):
 		state_final=metro_alg(steps, state_init, T, B, J)
 		succ= succeptibility(state_final, T)
@@ -167,14 +167,14 @@ class ising_model_lattice:
 	plt.xlabel('Temperature')
 	plt.ylabel("mag suscept.")
 	plt.title('mag suscept. as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
-	plt.show()
+	plt.show()"""
 
 
 #==============================================================================================	
 #====================================energy===================================================	
 #==============================================================================================
 	#creating a function to calculate the energy of a configuration
-	"""def En(matrix):
+	def En( matrix):
 		energy=0
 		for i in range (N):
 			for j in range (M):
@@ -200,7 +200,7 @@ class ising_model_lattice:
 
 
 		
-	#create a temperature loop to observe how the energy of a configuration changes with temp
+	"""#create a temperature loop to observe how the energy of a configuration changes with temp
 	for T in (temp_array):
 
 		matrix=metro_alg(steps, state_init, T, B, J)
@@ -220,11 +220,66 @@ class ising_model_lattice:
 #==============================================================================================	
 #this should be fairly similar in application as magnetic susceptibility was
 #(1/Kb*T)/T   *   [<E**2>-<E>**2]= C
+	def spec_heat( matrix):
+		energy=0
+		energy2=0
+		for i in range (N):
+			for j in range (M):
+				
+				#renaming i,j sheerly for consistency and ease of reading
+				x_pos=i
+				y_pos=j
 
-	#def heat_cap(matrix):
-	#	heat1
+				#si is a spin state in the matrix
+				si=matrix[x_pos,y_pos]
+			
+				#the boundary conditions w/ modulo
+				nearest= (matrix[(x_pos+1)%N,y_pos]
+					+ matrix[(x_pos-1)%N,y_pos]
+					+matrix[x_pos,(y_pos+1)%M]
+					+matrix[x_pos,(y_pos-1)%M])
 
-"""#=======================================================================================================
+				#update the energy from zero with each iteration
+				energy  +=  (( +0.25*J*si*nearest))
+				energy2 +=( + 0.25*J*si*nearest)
+		E1=(energy**1)/(N*M)	
+		E2= (((energy2)/(N*M))**2)
+		#print ("The value of specific heat is equal to: " +str(E1-E2)+ "For a temperature of: " +str(T))
+		#E2=(ising_model_lattice.En(self, matrix))**2
+		
+		spec= (+E1-E2)/(Kb*(T**2))
+		#print (spec)
+		return spec
+	"""		
+	for T in (temp_array):
+		matrix=metro_alg(steps, state_init, T, B, J)
+		
+		#print ("the heat capacity for Temperature = " + str(T) + " is equal to: " + str(heatcap))
+		#spec=ising_model_lattice.spec_heat(self, matrix)
+		spec111=spec_heat(matrix)	
+		plt.plot(T, spec111, 'ro')
+		plt.title('heat capacity as a function of temperature')
+		plt.xlabel('Temperature')
+		plt.ylabel('Heat capacity')
+	plt.show()
+	"""
+
+	"""state_init=ising_model_lattice("latty",N, M, B, T)
+	ising_model_lattice.vanilla_lattice_make("latty",N, M, B, T)
+	#state_init.vanilla_lattice_make()
+	temp_array=np.arange(0.1,5,0.05)
+	for T in (temp_array):
+		matrix=ising_model_lattice.metro_alg(steps, state_init, T, B, J)
+		
+			#print ("the heat capacity for Temperature = " + str(T) + " is equal to: " + str(heatcap))
+			#spec=ising_model_lattice.spec_heat(self, matrix)
+		spec=spec_heat(matrix)	
+		plt.plot(T, spec, 'ro')
+		plt.title('heat capacity as a function of temperature')
+		plt.xlabel('Temperature')
+		plt.ylabel('Heat capacity')
+	plt.show()"""
+	"""#=======================================================================================================
 		#printing the graph of the final state
 		print("Now Plotting The Final state...                             ")
 		plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
@@ -237,7 +292,7 @@ class ising_model_lattice:
 
 
 
-#=========================================================================================
+	#=========================================================================================
 
 	#printing a graph of the initial matrix state
 	tester= vanilla_lattice_make(N,M)
@@ -254,11 +309,9 @@ class ising_model_lattice:
 	metrotest=metro_alg(steps, state_init, T, B, J)	#taken by cutpaste from the end	
 	#plt.imshow(metrotest)
 	plt.show()
-#=========================================================================="""
-
+	#=========================================================================="""
 
 	
-
 
 
 
