@@ -27,19 +27,19 @@ N= 	no of x elements in the array
 M=	no of y elements in the array
 B=	the magnetic field applied to the lattice
 T= 	the temperature applied to the lattice""" 
-N=20
-M=20
-steps=10*N*M
+"""N=60
+M=60
+steps=500*N*M
 sweeps= steps/(N*M)
 Kb=1
 T=1
 B=0
 J=1
-
+T_crit=[]"""
 	
 #empty list to store energy values		
 
-class ising_model_lattice:
+class lattice:
 #==============================================================================================		
 #==============================initialisation==============================================
 #==============================================================================================
@@ -62,7 +62,11 @@ class ising_model_lattice:
 				matrix[i,j]= random.choice([-1,1])
 		return matrix
 	
-	state_init=vanilla_lattice_make(N,M)
+	"""state_init=vanilla_lattice_make(N,M)
+	plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
+	plt.title("initial state of " + str(N) + ' x ' + str(M) + " spin matrix, with " + str(sweeps) + "sweeps" )					
+	plt.colorbar(ticks=range(-1,2), label= 'Spin')
+	plt.show()"""
 
 #==============================================================================================
 #============================metropolois algorithm===============================================	
@@ -99,7 +103,7 @@ class ising_model_lattice:
 
 			#if energy is greater than 0
 			#only accept the flip with a certain probability:
-			elif random.random() < np.exp((1*dE)/(Kb*T)):
+			elif random.random() < np.exp((1*dE)/(Kb*(T))):
 				si *= -1
 
 			else: 
@@ -114,12 +118,17 @@ class ising_model_lattice:
 			i=+1
 		return state_init
 	
-
+	#create a temperature array over which we check the magnetisation
+	"""temp_array=np.arange(0.001,6,1)
 	#just checking final state each time to check if number of steps is sufficient
-	state_final_check=metro_alg(steps, state_init, T, B, J)
-	plt.imshow(state_final_check, interpolation='none')
-	plt.show()
-
+	for T in temp_array:
+		state_final_check=metro_alg(steps, state_init, T, B, J)
+		plt.imshow(state_final_check, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
+		plt.title("final state of " + str(N) + ' x ' + str(M) + " spin matrix, with " + str(sweeps) + " sweeps, for T= " + str(T))					
+		plt.colorbar(ticks=range(-1,2), label= 'Spin')
+		plt.show(block=False)
+		plt.pause(0.1)
+		plt.close()"""
 #==============================================================================================	
 #==========================================magnetisation=========================================
 #==============================================================================================
@@ -128,22 +137,21 @@ class ising_model_lattice:
 		mags= abs(np.sum(matrix)/(N*M))
 		return mags
 
-	#create a temperature array over which we check the magnetisation
-	temp_array=np.arange(0.1,5,0.05)	
-	
+		
+	"""temp_array=np.arange(0.01,5,0.1)
 	#create a for loop of temperature arrays so we can see how magnetisation 
 	#changes as a function of temperature
-	#for T in (temp_array):
-	#	state_final=metro_alg(steps, state_init, T, B, J)
-	#	mag_= magnetisation(state_final)
-	#	print("the normalised magnetisation is equal to " + str(mag_) + " for Temperature= " + str(T))
-	#	plt.plot(T, mag_, 'ro')
+	for T in (temp_array):
+		state_final=metro_alg(steps, state_init, T, B, J)
+		mag_= magnetisation(state_final)
+		print("the normalised magnetisation is equal to " + str(mag_) + " for Temperature= " + str(T))
+		plt.plot(T, mag_, 'ro')
 	
 	#preparing the plot of magnetisation as a function of temperature
-	#plt.xlabel('Temperature')
-	#plt.ylabel("net magnetisation")
-	#plt.title('magnetisation as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
-	#plt.show()
+	plt.xlabel('Temperature')
+	plt.ylabel("net magnetisation")
+	plt.title('magnetisation as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
+	plt.show()"""
 
 #==============================================================================================	
 #=================================magnetic succeptibility===================================	
@@ -156,8 +164,8 @@ class ising_model_lattice:
 		suscept = (1/T)*(mags-mags2)
 		return suscept
 
-	"""#write a loop to evaluate the susceptibility at a range of temperature values
-	for T in (temp_array):
+	#write a loop to evaluate the susceptibility at a range of temperature values
+	"""for T in (temp_array):
 		state_final=metro_alg(steps, state_init, T, B, J)
 		succ= succeptibility(state_final, T)
 		print("the mag susceptibility is equal to " + str(succ) + " for Temperature= " + str(T))
@@ -200,12 +208,12 @@ class ising_model_lattice:
 
 
 		
-	"""#create a temperature loop to observe how the energy of a configuration changes with temp
-	for T in (temp_array):
+	#create a temperature loop to observe how the energy of a configuration changes with temp
+	"""for T in (temp_array):
 
 		matrix=metro_alg(steps, state_init, T, B, J)
 		enerplot=En(matrix)
-		#print("enercheck returns:          " + str(enercheck))
+		print("enercheck returns:          " + str(enerplot))
 
 		#preparing the points to add to the plot
 		plt.plot(T, enerplot, 'ro')
@@ -244,14 +252,14 @@ class ising_model_lattice:
 				energy2 +=( + 0.25*J*si*nearest)
 		E1=(energy**1)/(N*M)	
 		E2= (((energy2)/(N*M))**2)
-		#print ("The value of specific heat is equal to: " +str(E1-E2)+ "For a temperature of: " +str(T))
+		print ("The value of specific heat is equal to: " +str(E1-E2)+ "For a temperature of: " +str(T))
 		#E2=(ising_model_lattice.En(self, matrix))**2
 		
 		spec= (+E1-E2)/(Kb*(T**2))
 		#print (spec)
 		return spec
-	"""		
-	for T in (temp_array):
+			
+	"""for T in (temp_array):
 		matrix=metro_alg(steps, state_init, T, B, J)
 		
 		#print ("the heat capacity for Temperature = " + str(T) + " is equal to: " + str(heatcap))
@@ -261,8 +269,8 @@ class ising_model_lattice:
 		plt.title('heat capacity as a function of temperature')
 		plt.xlabel('Temperature')
 		plt.ylabel('Heat capacity')
-	plt.show()
-	"""
+	plt.show()"""
+	
 
 	"""state_init=ising_model_lattice("latty",N, M, B, T)
 	ising_model_lattice.vanilla_lattice_make("latty",N, M, B, T)
