@@ -31,14 +31,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import random
 
-N=10
-M=10
-steps=10000
-B=0.02
-Vir=1
-T=0.01
+N=20
+M=20
+steps=1000
+B=50		#herd immunity
+Vir=1		#disease virility
+T=50
 J=1
 Kb=1
+mort_r=9999.0	#mortality rate in percent
+
 def healthy_population(N,M):
 	matrix=np.ones((N,M))
 	return matrix
@@ -118,17 +120,19 @@ def metro_alg(N, M,steps, state_init, T, B, J, Kb):
 
 		#now need to try to flip the spin and
 		#see how the energy changes
-		dE= +2*si*B - 2*J*si*nearest
+		dE= -2*si*B - 2*J*si*nearest
 
 		#set the test conditions
 	 	#print random.random()
 		# if energy is less than 0
 		#accetp the flip
 		if dE <= 0:
-			si *= -1
+			si = -1
 		#if energy is greater than 0
 		#only accept the flip with a certain probability:
-		elif random.random() < np.exp((1*dE)/(Kb*(T))):
+		
+		#the probability of being an independednt contractor of the disease				
+		elif random.random() < 1/(N*M):
 			si *= -1
 
 		else: 
@@ -142,6 +146,7 @@ def metro_alg(N, M,steps, state_init, T, B, J, Kb):
 		print "Sweeps are " + str((100*float(i))/steps) + '% complete' + "\r" ,
 		i=+1
 	return state_init
+	
 
 
 check= metro_alg(N,M, steps, health, T, B, J, Kb)
@@ -149,6 +154,31 @@ plt.imshow(check, interpolation='none')
 plt.colorbar()
 plt.show()
 
+
+#death is a function that affects the infected population 
+#depending on a randomised number. If this number falls below
+# the oserved mortality rate of the disease
+def death(N,M,steps,matrix, mortality_rate):
+	for i in range (steps):	
+		x_pos=np.random.choice(N)
+		y_pos=np.random.choice(M)
+		si=matrix[x_pos,y_pos]
+		rand=random.random()
+		#print si
+		#print float(mortality_rate/100.)
+		if si == (-1) and (rand < float(mortality_rate/100.0)):
+				si*=2
+		else:
+				si*=1
+		#now here i should add in a bit such that people can recover.
+		#thats not fun		
+		matrix[x_pos,y_pos]= si
+		i+=1
+	return matrix
+death_check= death(N,M,steps, check, mort_r)
+plt.imshow(death_check, interpolation='none')
+plt.colorbar()
+plt.show()
 
 
 
