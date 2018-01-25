@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-#program:		Ising model implementation.
+#program:		Ising model functions.
 #author	:		Jack Cummins
 #created:		4th Jan 2018
 #last edited:		23th Jan 2018
@@ -17,210 +17,137 @@ import time
 
 #first we're going to need to write code for a lattice
 
-"""Define the lattice fucntions etc as a class to keep
-everything organised and in the one place"""
 
-"""Need to include all the dependencies in the description
-of __init__ so anything below that has access to them. Current
+"""Need to include all the dependencies in the description. Current
 working arguments:
+
 N= 	no of x elements in the array
 M=	no of y elements in the array
 B=	the magnetic field applied to the lattice
-T= 	the temperature applied to the lattice""" 
-"""N=60
-M=60
-steps=500*N*M
-sweeps= steps/(N*M)
-Kb=1
-T=1
-B=0
-J=1
-T_crit=[]"""
-	
+T= 	the temperature applied to the lattice
+J=	the exchange energy of interaction""" 	
 #empty list to store energy values		
 
-class lattice:
+#class lattice:
 #==============================================================================================		
 #==============================initialisation==============================================
 #==============================================================================================
-	
-	def __init__(self, N, M, B, T):                            #the init (says arguments etc)
-		self.N=N
-		self.M=M
-		self.B=B
-		self.T=T
-		self.Kb=Kb
+"""stopped using a class based module for ease of use in the script.
+	the use of a class can be seen in the version history"""
 
 #==============================================================================================
 #===========================intial matrix maker=============================================	
 #==============================================================================================
 	
-	def vanilla_lattice_make(N,M):                             #fucntion which makes lattice
-		matrix=np.zeros((N,M))
-		for i in range(0,N):
-			for j in range (0,M):
-				matrix[i,j]= random.choice([-1,1])
-		return matrix
-	
-	"""state_init=vanilla_lattice_make(N,M)
-	plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
-	plt.title("initial state of " + str(N) + ' x ' + str(M) + " spin matrix, with " + str(sweeps) + "sweeps" )					
-	plt.colorbar(ticks=range(-1,2), label= 'Spin')
-	plt.show()"""
+def vanilla_lattice_make(N,M):                             #fucntion which makes lattice
+	matrix=np.zeros((N,M))
+	for i in range(0,N):
+		for j in range (0,M):
+			matrix[i,j]= random.choice([-1,1])
+	return matrix
 
 #==============================================================================================
 #============================metropolois algorithm===============================================	
 #============================================================================================== 
 	
-	def metro_alg(steps, state_init, T, B, J):
-		for i in range(0,steps):
-			#choose the initial spin si
-			#note that need to go 1 higher with randint
+def metro_alg(N, M,steps, state_init, T, B, J, Kb):
+	for i in range(0,steps):
+		#choose the initial spin si
+		#note that need to go 1 higher with randint
+		
+		#x_pos=np.random.randint(self.N+1)
+		#y_pos=np.random.randint(self.M+1)
+		x_pos=np.random.choice(N)
+		y_pos=np.random.choice(M)
+		si=state_init[x_pos,y_pos]
+
+		#think about the effect of its nearest neigbours
+		#add the modulus division as periodic boundary cond.
+		nearest= (state_init[(x_pos+1)%N,y_pos]+ 
+			state_init[(x_pos-1)%N,y_pos]+
+			state_init[x_pos,(y_pos+1)%M]+
+			state_init[x_pos,(y_pos-1)%M])
+
+		#now need to try to flip the spin and
+		#see how the energy changes
+		dE= +2*si*B - 2*J*si*nearest
+
+		#set the test conditions
+	 	#print random.random()
+		# if energy is less than 0
+		#accetp the flip
+		if dE >= 0:
+			si *= -1
+		#if energy is greater than 0
+		#only accept the flip with a certain probability:
+		elif random.random() < np.exp((1*dE)/(Kb*(T))):
+			si *= -1
+
+		else: 
+			si*=1
+
+		#else there is  no change but
+		#this doesn't need to be specified.... or does it..?
+		state_init[x_pos,y_pos]= si
 			
-			#x_pos=np.random.randint(self.N+1)
-			#y_pos=np.random.randint(self.M+1)
-			x_pos=np.random.choice(N)
-			y_pos=np.random.choice(M)
-			si=state_init[x_pos,y_pos]
-
-			#think about the effect of its nearest neigbours
-			#add the modulus division as periodic boundary cond.
-			nearest= (state_init[(x_pos+1)%N,y_pos]+ 
-				state_init[(x_pos-1)%N,y_pos]+
-				state_init[x_pos,(y_pos+1)%M]+
-				state_init[x_pos,(y_pos-1)%M])
-
-			#now need to try to flip the spin and
-			#see how the energy changes
-			dE= +2*si*B - 2*J*si*nearest
-
-			#set the test conditions
-		 	#print random.random()
-			# if energy is less than 0
-			#accetp the flip
-			if dE >= 0:
-				si *= -1
-
-			#if energy is greater than 0
-			#only accept the flip with a certain probability:
-			elif random.random() < np.exp((1*dE)/(Kb*(T))):
-				si *= -1
-
-			else: 
-				si*=1
-
-			#else there is  no change but
-			#this doesn't need to be specified.... or does it..?
-			state_init[x_pos,y_pos]= si
-			
-			#adding a progress monitor to the loop, with overwrite in terminal
-			print "Sweeps are " + str((100*float(i))/steps) + '% complete' + "\r" ,
-			i=+1
-		return state_init
+		#adding a progress monitor to the loop, with overwrite in terminal
+		print "Sweeps are " + str((100*float(i))/steps) + '% complete' + "\r" ,
+		i=+1
+	return state_init
 	
-	#create a temperature array over which we check the magnetisation
-	"""temp_array=np.arange(0.001,6,1)
-	#just checking final state each time to check if number of steps is sufficient
-	for T in temp_array:
-		state_final_check=metro_alg(steps, state_init, T, B, J)
-		plt.imshow(state_final_check, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
-		plt.title("final state of " + str(N) + ' x ' + str(M) + " spin matrix, with " + str(sweeps) + " sweeps, for T= " + str(T))					
-		plt.colorbar(ticks=range(-1,2), label= 'Spin')
-		plt.show(block=False)
-		plt.pause(0.1)
-		plt.close()"""
+#create a temperature array over which we check the magnetisation
+
 #==============================================================================================	
 #==========================================magnetisation=========================================
 #==============================================================================================
 	#here define the magnetisation as the sum of all spins, normalised, absolute
-	def magnetisation(matrix):
-		mags= abs(np.sum(matrix)/(N*M))
-		return mags
+def magnetisation(N, M, matrix):
+	print"Working on magnetisation..." + "\r" ,
+	mags= abs(np.sum(matrix)/(N*M))
+	return mags
 
-		
-	"""temp_array=np.arange(0.01,5,0.1)
-	#create a for loop of temperature arrays so we can see how magnetisation 
-	#changes as a function of temperature
-	for T in (temp_array):
-		state_final=metro_alg(steps, state_init, T, B, J)
-		mag_= magnetisation(state_final)
-		print("the normalised magnetisation is equal to " + str(mag_) + " for Temperature= " + str(T))
-		plt.plot(T, mag_, 'ro')
-	
-	#preparing the plot of magnetisation as a function of temperature
-	plt.xlabel('Temperature')
-	plt.ylabel("net magnetisation")
-	plt.title('magnetisation as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
-	plt.show()"""
 
 #==============================================================================================	
 #=================================magnetic succeptibility===================================	
 #==============================================================================================
 
 	#Mag supt is defined as X= [1/T][<M**2>-<M>**2]
-	def succeptibility( matrix, T):
-		mags= abs((np.sum(matrix*matrix))/(N*M))
-		mags2= abs(np.sum((matrix)/(N*M))**2)
-		suscept = (1/T)*(mags-mags2)
-		return suscept
-
-	#write a loop to evaluate the susceptibility at a range of temperature values
-	"""for T in (temp_array):
-		state_final=metro_alg(steps, state_init, T, B, J)
-		succ= succeptibility(state_final, T)
-		print("the mag susceptibility is equal to " + str(succ) + " for Temperature= " + str(T))
-		plt.plot(T, succ, 'ro')
-	
-	#preparing the plot of mag suscept. as a function of temperature
-	plt.xlabel('Temperature')
-	plt.ylabel("mag suscept.")
-	plt.title('mag suscept. as function of temperature for an '+ str(N) + ' x ' + str(M) + ' matrix ')
-	plt.show()"""
+def succeptibility(N, M, matrix, T):
+	print"Working on susceptibility..." + "\r" ,
+	mags= abs((np.sum(matrix*matrix))/(N*M))
+	mags2= abs(np.sum((matrix)/(N*M))**2)
+	suscept = (1/T)*(mags-mags2)
+	return suscept
 
 
 #==============================================================================================	
 #====================================energy===================================================	
 #==============================================================================================
 	#creating a function to calculate the energy of a configuration
-	def En( matrix):
-		energy=0
-		for i in range (N):
-			for j in range (M):
+def En(N, M, J, matrix):
+	print"Working on average energy..." + "\r" ,
+	energy=0
+	for i in range (N):
+		for j in range (M):
 				
-				#renaming i,j sheerly for consistency and ease of reading
-				x_pos=i
-				y_pos=j
+			#renaming i,j sheerly for consistency and ease of reading
+			x_pos=i
+			y_pos=j
 
 				#si is a spin state in the matrix
-				si=matrix[x_pos,y_pos]
+			si=matrix[x_pos,y_pos]
 			
 				#the boundary conditions w/ modulo
-				nearest= (matrix[(x_pos+1)%N,y_pos]
-					+ matrix[(x_pos-1)%N,y_pos]
-					+matrix[x_pos,(y_pos+1)%M]
-					+matrix[x_pos,(y_pos-1)%M])
+			nearest= (matrix[(x_pos+1)%N,y_pos]
+				+ matrix[(x_pos-1)%N,y_pos]
+				+matrix[x_pos,(y_pos+1)%M]
+				+matrix[x_pos,(y_pos-1)%M])
 
 				#update the energy from zero with each iteration
-				energy += -si*nearest*0.5*J
+			energy += -si*nearest*0.5*J
 		
 		#making sure to normalise the energy to the array size
-		return (energy)/(N*M)
-
-
-		
-	#create a temperature loop to observe how the energy of a configuration changes with temp
-	"""for T in (temp_array):
-
-		matrix=metro_alg(steps, state_init, T, B, J)
-		enerplot=En(matrix)
-		print("enercheck returns:          " + str(enerplot))
-
-		#preparing the points to add to the plot
-		plt.plot(T, enerplot, 'ro')
-		plt.title("Energy  as a function of Temperature")
-		plt.xlabel("Temperature")
-		plt.ylabel('Energy')
-	plt.show()"""
+	return (energy)/(N*M)
 
 
 #==============================================================================================	
@@ -228,66 +155,40 @@ class lattice:
 #==============================================================================================	
 #this should be fairly similar in application as magnetic susceptibility was
 #(1/Kb*T)/T   *   [<E**2>-<E>**2]= C
-	def spec_heat( matrix):
-		energy=0
-		energy2=0
-		for i in range (N):
-			for j in range (M):
-				
-				#renaming i,j sheerly for consistency and ease of reading
-				x_pos=i
-				y_pos=j
-
-				#si is a spin state in the matrix
-				si=matrix[x_pos,y_pos]
+def spec_heat(N, M, J, matrix, T, Kb):
+	print"Working on specifit..." + "\r" ,
+	energy=0
+	energy2=0
+	for i in range (N):
+		for j in range (M):
 			
-				#the boundary conditions w/ modulo
-				nearest= (matrix[(x_pos+1)%N,y_pos]
-					+ matrix[(x_pos-1)%N,y_pos]
-					+matrix[x_pos,(y_pos+1)%M]
-					+matrix[x_pos,(y_pos-1)%M])
+			#renaming i,j sheerly for consistency and ease of reading
+			x_pos=i
+			y_pos=j
+
+			#si is a spin state in the matrix
+			si=matrix[x_pos,y_pos]
+			
+			#the boundary conditions w/ modulo
+			nearest= (matrix[(x_pos+1)%N,y_pos]
+				+ matrix[(x_pos-1)%N,y_pos]
+				+matrix[x_pos,(y_pos+1)%M]
+				+matrix[x_pos,(y_pos-1)%M])
 
 				#update the energy from zero with each iteration
-				energy  +=  (( +0.25*J*si*nearest))
-				energy2 +=( + 0.25*J*si*nearest)
-		E1=(energy**1)/(N*M)	
-		E2= (((energy2)/(N*M))**2)
-		print ("The value of specific heat is equal to: " +str(E1-E2)+ "For a temperature of: " +str(T))
-		#E2=(ising_model_lattice.En(self, matrix))**2
+			energy  +=  (( +0.25*J*si*nearest))
+			energy2 +=( + 0.25*J*si*nearest)
+	E1=(energy**1)/(N*M)	
+	E2= (((energy2)/(N*M))**2)
+	#print ("The value of specific heat is equal to: " +str(E1-E2)+ "For a temperature of: " +str(T))
+	#E2=(ising_model_lattice.En(self, matrix))**2
 		
-		spec= (+E1-E2)/(Kb*(T**2))
-		#print (spec)
-		return spec
+	spec= (+E1-E2)/(Kb*(T**2))
+	#print (spec)
+	return spec
 			
-	"""for T in (temp_array):
-		matrix=metro_alg(steps, state_init, T, B, J)
-		
-		#print ("the heat capacity for Temperature = " + str(T) + " is equal to: " + str(heatcap))
-		#spec=ising_model_lattice.spec_heat(self, matrix)
-		spec111=spec_heat(matrix)	
-		plt.plot(T, spec111, 'ro')
-		plt.title('heat capacity as a function of temperature')
-		plt.xlabel('Temperature')
-		plt.ylabel('Heat capacity')
-	plt.show()"""
-	
 
-	"""state_init=ising_model_lattice("latty",N, M, B, T)
-	ising_model_lattice.vanilla_lattice_make("latty",N, M, B, T)
-	#state_init.vanilla_lattice_make()
-	temp_array=np.arange(0.1,5,0.05)
-	for T in (temp_array):
-		matrix=ising_model_lattice.metro_alg(steps, state_init, T, B, J)
-		
-			#print ("the heat capacity for Temperature = " + str(T) + " is equal to: " + str(heatcap))
-			#spec=ising_model_lattice.spec_heat(self, matrix)
-		spec=spec_heat(matrix)	
-		plt.plot(T, spec, 'ro')
-		plt.title('heat capacity as a function of temperature')
-		plt.xlabel('Temperature')
-		plt.ylabel('Heat capacity')
-	plt.show()"""
-	"""#=======================================================================================================
+"""#=======================================================================================================
 		#printing the graph of the final state
 		print("Now Plotting The Final state...                             ")
 		plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
@@ -295,29 +196,7 @@ class lattice:
 		plt.colorbar(ticks=range(-1,2), label= 'Spin')
 		plt.clim(-1,1)
 		plt.show()	
-
-	
-
-
-
-	#=========================================================================================
-
-	#printing a graph of the initial matrix state
-	tester= vanilla_lattice_make(N,M)
-	#print(tester)
-	plt.imshow(tester, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
-	plt.title('Initial Spin Map for '+ str(N) + ' x ' +str(M) + ' matrix ')
-	
-	#discretising the colorbar to show spins
-	plt.colorbar(ticks=range(-1,2), label='Spin')
-	plt.clim(-1,1)
-
-	plt.show()
-
-	metrotest=metro_alg(steps, state_init, T, B, J)	#taken by cutpaste from the end	
-	#plt.imshow(metrotest)
-	plt.show()
-	#=========================================================================="""
+================================================================"""
 
 	
 
