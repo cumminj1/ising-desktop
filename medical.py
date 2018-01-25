@@ -31,34 +31,43 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import random
 
-N=200
-M=200
-steps=1000
-immunity_rate=100	#herd immunity
-Virility=60.		#disease virility
+N=30
+M=30
+steps=8000
+immunity_rate=10001.#herd immunity
+Virility=1000.0		#disease virility
 T=50
 J=1
 Kb=1
-mort_r=99.0	#mortality rate in percent
+mort_r=20.0	#mortality rate in percent
 surv_r=50.       #the survivabiliity rate
 def healthy_population(N,M):
 	matrix=np.ones((N,M))
 	return matrix
 
 health=healthy_population(N,M)
-"""plt.imshow(health)
-plt.colorbar()
-plt.ion()
-plt.show()
-"""
+#plt.imshow(health)
+#plt.colorbar()
+#plt.ion()
+#plt.show()
 
+def infection_seed(N,M, matrix):
+		#x_pos=np.random.choice(N)
+  		#y_pos=np.random.choice(M)
+		x_pos=N/2
+		y_pos=M/2
+		matrix[x_pos, y_pos]*=(-1)
+		
+		return matrix
+
+seed_population= infection_seed(N, M, health)
+#plt.imshow(seed_population)
+#plt.show()
 def metro_alg(N, M,steps, state_init, immunity_rate, Virility):
 	for i in range(0,steps):
 		#choose the initial spin si
 		#note that need to go 1 higher with randint
-		
-		#x_pos=np.random.randint(self.N+1)
-		#y_pos=np.random.randint(self.M+1)
+
 		x_pos=np.random.choice(N)
 		y_pos=np.random.choice(M)
 		si=state_init[x_pos,y_pos]
@@ -74,7 +83,7 @@ def metro_alg(N, M,steps, state_init, immunity_rate, Virility):
 		#see how the energy changes
 		inf= immunity_rate -Virility
 		#inf=(immunity_rate-Virility)*nearest
-
+		#print(inf)
 		#set the test conditions
 	 	#print random.random()
 		# if energy is less than 0
@@ -85,8 +94,8 @@ def metro_alg(N, M,steps, state_init, immunity_rate, Virility):
 		#only accept the flip with a certain probability:
 		
 		#the probability of being an independednt contractor of the disease				
-		elif random.random() < float(Virility/100.):
-			si *= -1
+		#elif random.random() < float(Virility/100.):
+		#	si *= -1
 
 		else: 
 			si*=1
@@ -102,12 +111,12 @@ def metro_alg(N, M,steps, state_init, immunity_rate, Virility):
 	
 
 
-check= metro_alg(N,M, steps, health, immunity_rate, Virility)
-"""plt.imshow(check, interpolation='none',cmap=plt.cm.get_cmap('RdYlGn', 2))
-plt.colorbar(ticks=range(-1,2), label= 'Healthy and Infected')
+check= metro_alg(N,M, steps, seed_population, immunity_rate, Virility)
+#plt.imshow(check, interpolation='none',cmap=plt.cm.get_cmap('RdYlGn', 2))
+#plt.colorbar(ticks=range(-1,2), label= 'Healthy and Infected')
 
-plt.ion()
-plt.show()"""
+#plt.ion()
+#plt.show()
 
 
 #death is a function that affects the infected population 
@@ -119,6 +128,7 @@ def death(N,M,steps,matrix, mortality_rate):
 		y_pos=np.random.choice(M)
 		si=matrix[x_pos,y_pos]
 		rand=random.random()
+		print rand
 		#print si
 		#print float(mortality_rate/100.)
 		if si == (-1) and (rand < float(mortality_rate/100.0)):
@@ -131,8 +141,9 @@ def death(N,M,steps,matrix, mortality_rate):
 		i+=1
 	return matrix
 death_check= death(N,M,steps, check, mort_r)
-plt.imshow(death_check, interpolation='none', cmap=plt.get_cmap('RdYlGn',3))
-plt.colorbar(ticks=range(-2,2), label= 'Healthy and Infected')
+plt.imshow(death_check, interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
+plt.colorbar(ticks=range(-4,3), label= 'Healthy and Infected')
+plt.title("The spread of disease related death in a population")
 plt.ion()
 plt.show()
 
@@ -142,7 +153,7 @@ def recovery(N,M,steps,matrix, survival_rate):
 		y_pos=np.random.choice(M)
 		si=matrix[x_pos,y_pos]
 		rand=random.random()
-  
+		print rand
   
 		if si==(-1) and (rand< float(survival_rate/100)):
 				si*=-1
