@@ -15,5 +15,7 @@ The investigation centres upon the use of a heavily modified ising model with me
 algorith to model the spread of pathogenic diseases as a function of both the virility of the disease
 and the immunity of the population.
 
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/50by50.gif)
+
 the disease is generalised and can be modified to vary the mortality rate of the disease in addition to
 the recovery rate from illness  (death and recovery are controlled by independent functions)
