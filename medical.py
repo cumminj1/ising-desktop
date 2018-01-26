@@ -45,7 +45,7 @@ def healthy_population(N,M):
 	matrix=np.ones((N,M))
 	return matrix
 
-health=healthy_population(N,M)
+#health=healthy_population(N,M)
 #plt.imshow(health)
 #plt.colorbar()
 #plt.ion()
@@ -60,10 +60,10 @@ def infection_seed(N,M, matrix):
 		
 		return matrix
 
-seed_population= infection_seed(N, M, health)
+#seed_population= infection_seed(N, M, health)
 #plt.imshow(seed_population)
 #plt.show()
-def metro_alg(N, M,steps, state_init, immunity_rate, Virility):
+def infection(N, M,steps, state_init, immunity_rate, Virility):
 	for i in range(0,steps):
 		#choose the initial spin si
 		#note that need to go 1 higher with randint
@@ -111,7 +111,7 @@ def metro_alg(N, M,steps, state_init, immunity_rate, Virility):
 	
 
 
-check= metro_alg(N,M, steps, seed_population, immunity_rate, Virility)
+#check= infection(N,M, steps, seed_population, immunity_rate, Virility)
 #plt.imshow(check, interpolation='none',cmap=plt.cm.get_cmap('RdYlGn', 2))
 #plt.colorbar(ticks=range(-1,2), label= 'Healthy and Infected')
 
@@ -140,12 +140,12 @@ def death(N,M,steps,matrix, mortality_rate):
 		matrix[x_pos,y_pos]= si
 		i+=1
 	return matrix
-death_check= death(N,M,steps, check, mort_r)
-plt.imshow(death_check, interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
-plt.colorbar(ticks=range(-4,3), label= 'Healthy and Infected')
-plt.title("The spread of disease related death in a population")
+#death_check= death(N,M,steps, check, mort_r)
+#plt.imshow(death_check, interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
+#plt.colorbar(ticks=range(-4,3), label= 'Healthy and Infected')
+#plt.title("The spread of disease related death in a population")
 #plt.ion()
-plt.show()
+#plt.show()
 
 def recovery(N,M,steps,matrix, survival_rate):
 	for i in range (steps):	
