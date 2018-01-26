@@ -113,50 +113,13 @@ def infection(N, M,time, state_init, immunity_rate, Virility, mortality_rate, ti
 	
 	#return the result
 	return state_init
-	
 
-
-#check= infection(N,M, steps, seed_population, immunity_rate, Virility)
-#plt.imshow(check, interpolation='none',cmap=plt.cm.get_cmap('RdYlGn', 2))
-#plt.colorbar(ticks=range(-1,2), label= 'Healthy and Infected')
-
-#plt.ion()
-#plt.show()
-
-
-#death is a function that affects the infected population 
-#depending on a randomised number. If this number falls below
-# the oserved mortality rate of the disease
-"""def death(N,M,steps,matrix, mortality_rate):
-	for i in range (steps):	
-		x_pos=np.random.choice(N)
-		y_pos=np.random.choice(M)
-		si=matrix[x_pos,y_pos]
-		rand=random.random()
-		print rand
-		#print si
-		#print float(mortality_rate/100.)
-		if si == (-1) and (rand < float(mortality_rate/100.0)):
-				si*=2
-		else:
-				si*=1
-		#now here i should add in a bit such that people can recover.
-		#thats not fun		
-		matrix[x_pos,y_pos]= si
-		i+=1
-	return matrix"""
-#death_check= death(N,M,steps, check, mort_r)
-#plt.imshow(death_check, interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
-#plt.colorbar(ticks=range(-4,3), label= 'Healthy and Infected')
-#plt.title("The spread of disease related death in a population")
-#plt.ion()
-#plt.show()
 
 
 #we define the recovery function separately since the application of medicine to such 
 #diseases is generally rolled out as a blanket solution ie. not incrementally
 def recovery(N,M,steps,matrix, survival_rate):
-	for i in range (steps):	
+	for i in range (0, steps):	
 		x_pos=np.random.choice(N)
 		y_pos=np.random.choice(M)
 		si=matrix[x_pos,y_pos]
