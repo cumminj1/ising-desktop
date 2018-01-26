@@ -144,7 +144,7 @@ death_check= death(N,M,steps, check, mort_r)
 plt.imshow(death_check, interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
 plt.colorbar(ticks=range(-4,3), label= 'Healthy and Infected')
 plt.title("The spread of disease related death in a population")
-plt.ion()
+#plt.ion()
 plt.show()
 
 def recovery(N,M,steps,matrix, survival_rate):
