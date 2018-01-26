@@ -11,16 +11,16 @@ import lattice as lt
 import matplotlib.pyplot as plt
 from matplotlib import rc
 #define our constants and variables
-N=50
-M=50
+N=60
+M=60
 
-steps=750*N*M
+steps=6*N*M
 sweeps= steps/(N*M)
 Kb=1
 T=1
 B=0
 J=1
-temp_array=np.arange(0.1,5,0.05)	
+temp_array=np.arange(0.1,5,0.1)	
 #================================================================================
 #=======================Initial state  ==========================================
 #================================================================================
@@ -31,16 +31,25 @@ plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
 plt.colorbar(ticks=range(-1,2), label= 'Spin')
 plt.title("Spin map of initial state\n for  " 
 		+ str(N) + ' x ' +str(M) + "lattice.")
-plt.show(block=False)
-plt.pause(3)
+plt.show(block=True)
+plt.pause(0)
 plt.close()
+#view the change of matrix with temperature
 
-
+for T in (temp_array):
+	evo=lt.metro_alg(N, M,steps, state_init, T, B, J, Kb)
+	plt.imshow(evo, interpolation='none',cmap=plt.cm.get_cmap('bone', 2))
+	plt.clim(-1,1)
+	plt.colorbar(ticks=range(-1,2), label= 'Spin')
+	plt.title("Spin map of final state\n for  " 
+		+ str(N) + ' x ' +str(M) + "lattice.\n Temperature= " +str(T) )
+	plt.savefig("temp_eq_"+str(T*10)+"_" + str(N*M)+".png", bbox_inches = 'tight')
+	plt.close()
 #================================================================================
 #====================calculating the observables==========================================
 #================================================================================
 
-
+"""
 #configure a plot for magnetisation:
 fig1=plt.figure().add_subplot(111)
 fig1.set_title("Magnetisation as a function of temperature \n for  " 
@@ -100,7 +109,7 @@ for T in (temp_array):
 	
 	
 plt.show()
-
+"""
 
 
 
