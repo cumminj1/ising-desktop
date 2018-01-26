@@ -12,13 +12,11 @@ import matplotlib as mpl
 import numpy as np
 N=30
 M=30
-steps=6000000000
-immunity_rate=1000.#herd immunity
-Virility=10001.0		#disease virility
-T=50
-J=1
-Kb=1
-mort_r=20.0	#mortality rate in percent
+time_upper=1000
+immunity_rate=99#herd immunity
+Virility=100		#disease virility
+mort_r= 95.	#mortality rate in percent
+
 surv_r=50. 
 
 
@@ -48,27 +46,26 @@ plt.colorbar(ticks=range(-3,3), label= 'Healthy and Infected')
 #show
 plt.show()
 
-for steps in range (0,1000,50):
+
+#we check how the disease develops as a function of time
+
+
+for time in range (0,time_upper,50):
 	#create a plot showing the spread of disease throughout the population
-	check= med.infection(N,M, steps, infection_seed, immunity_rate, Virility)
+	check= med.infection(N,M, time, infection_seed, immunity_rate, Virility, mort_r, time_upper)
 	plt.imshow(check,interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
 	plt.title("a population where disease has been allowed to spread"+" \n Immunity= "+ str(immunity_rate) + 
 		 "\n Virility= " + str(Virility) + " \n mortality rate= "+str(mort_r) +
-		 "\n recovery rate= " + str(surv_r) + "\n generations:" + str(steps))
+		 "\n recovery rate= " + str(surv_r) + "\n generations:" + str(time))
 	#normalise cb
 	plt.clim(-2,1)
 	plt.colorbar(ticks=range(-3,3), label= 'Healthy and Infected')
 	#show
-	plt.savefig("infection_"+str(N)+ "_" +str(steps*50))
+	plt.savefig("infection_"+str(N)+ "_" +str(time*50), bbox_inches = 'tight')
 	plt.close()
+plt.imshow(check,interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
 
 
-#create a plot showing the fatalities due to the disease
-death_check= med.death(N,M,steps, check, mort_r)
-plt.imshow(death_check, interpolation='none', cmap=plt.get_cmap('RdYlGn',4))
-plt.title("The spread of disease related death in a population"+" \n Immunity= "+ str(immunity_rate) + 
-	 "\n Virility= " + str(Virility) + " \n mortality rate= "+str(mort_r) +
-	 "\n recovery rate= " + str(surv_r))
 #normailse the cb
 plt.clim(-2,1)
 plt.colorbar(ticks=range(-4,3), label= 'Healthy and Infected')
