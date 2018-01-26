@@ -18,5 +18,34 @@ and the immunity of the population.
 the disease is generalised and can be modified to vary the mortality rate of the disease in addition to
 the recovery rate from illness  (death and recovery are controlled by independent functions)
 
-![alt text](https://github.com/cumminj1/ising-desktop/blob/master/disease_spread.gif)
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/non-fatal.gif)
+
 This gif shows the spread of a disease with a 0% mortality rate throughout a population of 900 
+
+
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/low-fatality.gif)
+
+This gif shows the spread of a disease with a low mortality rate through the population
+
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/mid-fatality.gif)
+
+This gif shows the spread of a disease with a middling mortality rate through the population
+
+
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/high-fatality.gif)
+
+This gif shows the spread of a disease with a high mortality rate through the population
+
+
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/medicine.png)
+
+Above is a png of a population ravaged by a particularly virile, althought not very dangerous disease.
+We take this to be a starting point for the application of antibiotics, which, assuming prompt distribution 
+act extremely quickly since they do not have a dependence upon the state of the people they come into contact with.
+
+
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/recovery.gif)
+
+This gif shows the removal of infection with the treatment of antibiotics over time. Note
+that the recovery does not depend on the nearest neighbours' state of infection/health, UNLIKE
+the infection function
