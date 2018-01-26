@@ -35,3 +35,10 @@ This gif shows the spread of a disease with a middling mortality rate through th
 ![alt text](https://github.com/cumminj1/ising-desktop/blob/master/high-fatality.gif)
 
 This gif shows the spread of a disease with a high mortality rate through the population
+
+
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/recovery.gif)
+
+This gif shows the removal of infection with the treatment of antibiotics over time. Note
+that the recovery does not depend on the nearest neighbours' state of infection/health, UNLIKE
+the infection function
