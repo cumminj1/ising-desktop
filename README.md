@@ -16,7 +16,9 @@ into a scientific topic, utilising the ising model as a tool.
 
 This gif shows how the ferromagnetic properties of a material change with temperature, especially given the phase change at a curie temperature = 2.4 for the purposes of this simulation
 
+![alt text](https://github.com/cumminj1/ising-desktop/blob/master/FotoJet.png)
 
+above we see the graphs of the observable quantities we examined in the course of this investigation, all as labelled in each graph
 
 The investigation centres upon the use of a heavily modified ising model with metropolis 
 algorith to model the spread of pathogenic diseases as a function of both the virility of the disease
