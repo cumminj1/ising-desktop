@@ -31,15 +31,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import random
 
+#==========================================================================================
+#============================intial "healthy" matix========================================
+#==========================================================================================
+
+
+
 def healthy_population(N,M):
 	matrix=np.ones((N,M))
 	return matrix
-
-#health=healthy_population(N,M)
-#plt.imshow(health)
-#plt.colorbar()
-#plt.ion()
-#plt.show()
+#==========================================================================================
+#=============================  seeding infection   =======================================
+#==========================================================================================
 
 def infection_seed(N,M, matrix):
 		#x_pos=np.random.choice(N)
@@ -51,6 +54,12 @@ def infection_seed(N,M, matrix):
 		return matrix
 
 
+	
+#==========================================================================================
+#=========================spread of the infection==========================================
+#==========================================================================================
+	
+	
 #the infection function is a heavily modified metropolis algorith with and extra set of conditions
 #which allows people to die provided the virility is greater than the immunity and that the infected
 #is below the normalised mortality rate.
@@ -114,6 +123,9 @@ def infection(N, M,time, state_init, immunity_rate, Virility, mortality_rate, ti
 	#return the result
 	return state_init
 
+#==========================================================================================
+#===========================recovery/antibiotics===========================================
+#==========================================================================================
 
 
 #we define the recovery function separately since the application of medicine to such 
@@ -136,11 +148,6 @@ def recovery(N,M,steps,matrix, survival_rate):
 	return matrix
  
 
-"""recovtest= recovery(N,M, steps, check, surv_r)
-plt.imshow(recovtest, interpolation='none')
-plt.colorbar()
-plt.show()
-"""
 
 
 
