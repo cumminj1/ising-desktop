@@ -49,7 +49,7 @@ for T in (temp_array):
 #====================calculating the observables==========================================
 #================================================================================
 
-"""
+
 #configure a plot for magnetisation:
 fig1=plt.figure().add_subplot(111)
 fig1.set_title("Magnetisation as a function of temperature \n for  " 
@@ -109,19 +109,12 @@ for T in (temp_array):
 	
 	
 plt.show()
-"""
 
 
 
 
 
-	#printing the max values
-	#create a temperature array over which we check the magnetisation
-	
-#print("for a matrix of dimensions: " + str(N)+ " x " +str(M))
-#print("The max magnetisation is equal to: " + str(max(mag_)))
-#print("The max magnetic susceptibility is equal to: " + str(max(succ)))
-#print("The max energy value is equal to: " + str(max (enerplot)))
-#print("The max heat capacity is equal to: " + str(max(spec111)))
+
+
 
 
