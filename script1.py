@@ -81,6 +81,9 @@ fig4.set_ylabel("Specific heat (Cv)")
 #================================================================================
 #=======================Function calling=========================================
 #================================================================================
+succ1=[]		#to store outputs of susceptibility
+temp=[]			#to store corresponding outputs of temperature
+
 
 #calling all function for a specified lattice size over a range of temperatures
 for T in (temp_array):
@@ -94,6 +97,7 @@ for T in (temp_array):
 
 	#magnetic succeptibility
 	succ= lt.succeptibility(N, M,matrix, T)
+	succ1.append(succ)			#append susceptibility list
 	#print("the mag susceptibility is equal to " + str(succ) + " for Temperature= " + str(T))
 	fig2.plot(T, succ, 'ro')	
 	
@@ -107,12 +111,15 @@ for T in (temp_array):
 	spec111=lt.spec_heat(N, M, J, matrix, T, Kb)	
 	fig4.plot(T, spec111, 'ro')
 	
-	
+	temp.append(T)		#append temperature list
 plt.show()
 
 
 
-
+#printing the Curie Temperature
+Tc=(max(succ1))
+max_index=succ1.index(Tc)
+print("The curie temperature is equal to: " + temp[max_index] + "J/Kb")
 
 
 
