@@ -188,14 +188,7 @@ def spec_heat(N, M, J, matrix, T, Kb):
 	return spec
 			
 
-"""#=======================================================================================================
-		#printing the graph of the final state
-		print("Now Plotting The Final state...                             ")
-		plt.imshow(state_init, interpolation='none', cmap=plt.cm.get_cmap('bone', 2))
-		plt.title("final state of " + str(N) + ' x ' + str(M) + " spin matrix, with " + str(sweeps) + " sweeps")					
-		plt.colorbar(ticks=range(-1,2), label= 'Spin')
-		plt.clim(-1,1)
-		plt.show()	
+	
 ================================================================"""
 
 	
